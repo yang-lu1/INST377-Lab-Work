@@ -25,3 +25,30 @@ body {
   max-width: 960px;
   margin-top: 25px;
 }
+
+.box{
+  border-radius: 6px;
+  color: #4a4a4a;
+  display: block;
+  padding: 1.25rem;
+}
+.heading{
+  text-align: left;
+  padding: 25px;
+}
+.main_container{
+  max-width: 960px;
+  margin-top: 25px;
+}
+.main{
+  display:flex;
+  background-color: slategray;
+  width:auto;
+  margin: 20px 40px 20px 40px;
+  height: 100px;
+  border-radius: 3px;
+}
+.data_form{
+  display:flex;
+  background-color: rgb(0, 255, 115);
+}
