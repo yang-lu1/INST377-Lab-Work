@@ -10,7 +10,7 @@ function restArrayMake(dataArray) {
     const restNum = getRandomIntInclusive(0, dataArray.length - 1);
     return dataArray[restNum];
   });
-  console.log(listItems);
+  return listItems;
 }
 
 function createHtmlList(collection) {
@@ -25,17 +25,14 @@ function createHtmlList(collection) {
 }
 async function mainEvent() {
   // the async keyword means we can make API requests
-  const form = document.querySelector('.main_form');
+  const form = document.querySelector('#main_form');
   const submitButton = document.querySelector('#submit_button');
   submitButton.style.display = 'none';
 
-  const results = await fetch(
-    'https://data.princegeorgescountymd.gov/resource/umjn-t2iz.json'
-  ); // This accesses some data from our API
+  const results = await fetch('/api/foodServicesPG'); // This accesses some data from our API
   const arrayFromJson = await results.json(); // This changes it into data we can use - an object
-
-  if (arrayFromJson.length > 0) {
-    submit_button.style.display = 'block';
+  if (arrayFromJson.data.length > 0) {
+    submitButton.style.display = 'block';
     form.addEventListener('submit', async (submitEvent) => {
       // async has to be declared all the way to get an await
       submitEvent.preventDefault(); // This prevents your page from refreshing!
@@ -45,6 +42,5 @@ async function mainEvent() {
     });
   }
 }
-restArrayMake();
 // this actually runs first! It's calling the function above
 document.addEventListener('DOMContentLoaded', async () => mainEvent()); // the async keyword means we can make API requests
