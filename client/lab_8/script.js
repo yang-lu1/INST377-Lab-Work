@@ -43,6 +43,7 @@ function initMap(targetId) {
   return map;
 }
 function addMapMarker(map, collection) {
+  const bounds = L.latLngBounds();
   map.eachLayer((layer) => {
     if (layer instanceof L.Marker) {
       layer.remove();
@@ -50,8 +51,25 @@ function addMapMarker(map, collection) {
   });
 
   collection.forEach((item) => {
+  //   const point = item.geocoded_column_1?.coordinates;
+  //   L.marker([point[1], point[0]]).addTo(map);
+  // });
     const point = item.geocoded_column_1?.coordinates;
-    L.marker([point[1], point[0]]).addTo(map);
+    const LatLong = [point[1], point[0]];
+    L.marker(LatLong).addTo(map);
+    bounds.extend(LatLong); // Extend LatLngBounds with coordinates
+  });
+  map.fitBounds(bounds);
+}
+
+function refreshList(target, storage) {
+  target.addEventListener('click', async (event) => {
+    event.preventDefault();
+    localStorage.clear();
+    const results = await fetch('/api/foodServicesPG');
+    const arrayFromJson = await results.json();
+    localStorage.setItem(storage, JSON.stringify(arrayFromJson.data));
+    location.reload();
   });
 }
 
@@ -61,9 +79,12 @@ async function mainEvent() {
   const submitButton = document.querySelector('#submit_button');
   const restName = document.querySelector('#restName');
   const city = document.querySelector('#city');
+  const refresh = document.querySelector('#refresh_button');
   const map = initMap('map');
   const retrevialVar = 'restaurants';
   submitButton.style.display = 'none';
+
+  refreshList(refresh, retrevialVar);
 
   if (localStorage.getItem(retrevialVar) === undefined) {
     const results = await fetch('/api/foodServicesPG'); // This accesses some data from our API
@@ -83,7 +104,7 @@ async function mainEvent() {
         console.log('caught');
         return;
       }
-      // change arrayFromJson.data to currentArray if needed
+
       const selectRest = storedDataArray.filter((item) => {
         const lowerName = item.name.toLowerCase();
         const lowerValue = event.target.value.toLowerCase();
@@ -96,19 +117,19 @@ async function mainEvent() {
 
     city.addEventListener('input', async (event) => {
       console.log(event.target.value);
-      const cityRest = arrayFromJson.data.filter((item) => {
+      const cityRest = storedDataArray.filter((item) => {
         const lowerName = item.city.toLowerCase();
         const lowerCity = event.target.value.toLowerCase();
         return lowerName.includes(lowerCity);
       });
       console.log(cityRest);
       createHtmlList(cityRest);
+      addMapMarker(map, cityRest);
     });
     form.addEventListener('submit', async (submitEvent) => {
       // async has to be declared all the way to get an await
       submitEvent.preventDefault(); // This prevents your page from refreshing!
       console.log('form submission'); // this is substituting for a 'breakpoint'
-      // currentArray = restArrayMake(arrayFromJson.data);
       currentArray = restArrayMake(storedDataArray);
       createHtmlList(currentArray);
       addMapMarker(map, currentArray);
