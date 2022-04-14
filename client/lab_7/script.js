@@ -18,12 +18,15 @@ function createHtmlList(collection) {
   targetList.innerHTML = '';
   collection.forEach((item) => {
     const { name } = item;
+    const { city } = item;
     const displayName = name.toLowerCase();
-    const injectThis = `<li>${displayName}</li>`;
+    const displayCity = city.toLowerCase();
+    const injectThis = `<li>Name: ${displayName}</li>`;
+    const injectThisCity = `<li>City: ${displayCity}</li>`;
     targetList.innerHTML += injectThis;
+    targetList.innerHTML += injectThisCity;
   });
 }
-
 async function mainEvent() {
   // the async keyword means we can make API requests
   const form = document.querySelector('#main_form');
@@ -53,7 +56,7 @@ async function mainEvent() {
         return lowerName.includes(lowerValue);
       });
       console.log(selectRest);
-      createHtmlList(selectRest);
+      createHtmlList(restArrayMake(selectRest));
     });
 
     city.addEventListener('input', async (event) => {
@@ -64,7 +67,7 @@ async function mainEvent() {
         return lowerName.includes(lowerCity);
       });
       console.log(cityRest);
-      createHtmlList(cityRest);
+      createHtmlList(restArrayMake(cityRest));
     });
     form.addEventListener('submit', async (submitEvent) => {
       // async has to be declared all the way to get an await
