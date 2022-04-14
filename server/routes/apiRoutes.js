@@ -139,6 +139,28 @@ router.route('/wholeMeal2')
 
 /// /////////////////////////////////
 /// ////Dining Hall Endpoints////////
+router.route('api')
+  .post(async (req, res) => {
+    try {
+      console.log(req.body);
+      console.log(req.body?.albums);
+      const result = await db.albums.findAll();
+      res.json({data: result});
+    } catch (err) {
+      console.log(err);
+      res.send({message: 'Something went wrong on the SQL request'});
+    }
+  });
+route.get('/albums', async(req, res) => {
+  try {
+    const albums = await db.albums.findAll();
+    const reply = albums.length > 0 ? {data: albums} : {message: 'no results'};
+    res.json(reply);
+  } catch (err) {
+    console.log(err);
+    res.send('Serv Err');
+  }
+});
 /// /////////////////////////////////
 router.get('/dining', async (req, res) => {
   try {
